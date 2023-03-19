@@ -11,7 +11,7 @@ const {
 const newPair = new Keypair();
 
 // Exact the public and private key from the keypair
-// const publicKey = new PublicKey("dbN241RuqHxTQQ8WAU942V1fA2rxNLbCx4pxzz1TcGj").toString();
+const publicKey = new PublicKey("dbN241RuqHxTQQ8WAU942V1fA2rxNLbCx4pxzz1TcGj").toString();
 const privateKey = newPair._keypair.secretKey;
 
 // Connect to the Devnet

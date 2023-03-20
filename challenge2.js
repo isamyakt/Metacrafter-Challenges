@@ -1,9 +1,3 @@
-
-// Your challenge is to calculate the wallet balance of the sender wallet.
-//  Then, transfer 50% of the balance to another wallet.
-
-
-
 // Import Solana web3 functinalities
 const {
     Connection,
@@ -35,11 +29,24 @@ const DEMO_FROM_SECRET_KEY = new Uint8Array(
     ]            
 );
 
+const RECEIVER_SECRET_KEY = new Uint8Array(
+    // paste your secret key array here
+      [
+          177, 214, 250, 190,  60,  50,  21,  75, 179, 190, 245,
+          124, 110, 221, 193, 189,   7,   4,  63, 191,  80,  50,
+          85,  31, 128,  99, 172, 167,  41, 180, 229, 228, 154,
+          238,  54, 201, 242, 160, 153,  12, 193, 106, 120,  67,
+          15, 233,  42,  78,  96, 136, 244,   6, 236,  64,  60,
+          250,  18,   4,  66, 191, 141,  45, 170,  76
+      ]            
+  );
+
 const transferSol = async() => {
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
     // Get Keypair from Secret Key
     var from = Keypair.fromSecretKey(DEMO_FROM_SECRET_KEY);
+    var to = Keypair.fromSecretKey(RECEIVER_SECRET_KEY);
 
     // Other things to try: 
     // 1) Form array from userSecretKey
@@ -47,8 +54,6 @@ const transferSol = async() => {
     // 2) Make a new Keypair (starts with 0 SOL)
     // const from = Keypair.generate();
 
-    // Generate another Keypair (account we'll be sending to)
-    const to = Keypair.generate();
 
     // Aidrop 2 SOL to Sender wallet
     console.log("Airdopping some SOL to Sender wallet!");
@@ -68,14 +73,16 @@ const transferSol = async() => {
         signature: fromAirDropSignature
     });
 
+    const TO_WALLET_BAL = await connection.getBalance(new PublicKey(to.publicKey));
     console.log("Airdrop completed for the Sender account");
+    let fiftyPercent = (parseInt(TO_WALLET_BAL) / LAMPORTS_PER_SOL) * 0.5;
 
     // Send money from "from" wallet and into "to" wallet
     var transaction = new Transaction().add(
         SystemProgram.transfer({
             fromPubkey: from.publicKey,
             toPubkey: to.publicKey,
-            lamports: LAMPORTS_PER_SOL / 100
+            lamports: fiftyPercent * LAMPORTS_PER_SOL
         })
     );
 
@@ -86,6 +93,12 @@ const transferSol = async() => {
         [from]
     );
     console.log('Signature is', signature);
+
+    console.log("Checking wallet balances after fifty percent transfer!");
+    const WALLET_BAL_FROM = await connection.getBalance(from.publicKey);
+    const WALLET_BAL_TO = await connection.getBalance(to.publicKey);
+    console.log("From Wallet Balance : " + (parseInt(WALLET_BAL_FROM) / LAMPORTS_PER_SOL) + " SOL");
+    console.log("To Wallet Balance : " + (parseInt(WALLET_BAL_TO) / LAMPORTS_PER_SOL) + " SOL");
 }
 
 transferSol();

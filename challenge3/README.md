@@ -1,4 +1,4 @@
-# Challenge 2 - Solana
+# Challenge 3 Solana
 Solana - Phantom wallet
 
 ## Available Scripts

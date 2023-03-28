@@ -122,15 +122,22 @@ export default function App() {
         </div>
       )}
       <header className="App-header">
-        <h2>Connect to Phantom Wallet</h2>
+        {provider && !walletKey && (
+          <h2>Connect to Phantom Wallet</h2>
+        )}
         {provider && !walletKey && (
           // Display the Connect button when no wallet key connected yet
           <button onClick={connectWallet}>Connect</button>
+        )}
+        
+        {provider && walletKey && (
+          <h2>Connected to Phantom Wallet</h2>
         )}
         {provider && walletKey && (
           // Display the public key of the connected wallet
           <p>Connected account: <span>{walletKey}</span></p>
         )}
+        
         {!provider && (
           <p>
             No provider found. Install{" "}
